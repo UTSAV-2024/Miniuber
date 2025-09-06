@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Uber - Smart Ride Matching</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --gold-gradient: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --shadow-light: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.2);
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --border-radius: 20px;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+            animation: backgroundShift 15s ease-in-out infinite;
+        }
+        
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 152, 219, 0.95));
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fff, #f1c40f, #fff);
+            background-size: 200% 200%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr 350px;
+            gap: 30px;
+            height: calc(100vh - 200px);
+        }
+        
+        .left-panel, .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .section {
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section h2 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .location-section {
+            position: relative;
+        }
+        
+        .location-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .location-dot {
+            width: 10px;
+            height: 10px;
+            background: #e74c3c;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .location-dot.active {
+            background: #27ae60;
+        }
+        
+        .location-text {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.9);
+            transition: var(--transition);
+            color: var(--text-primary);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: var(--transition);
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-success { background: var(--success-gradient); }
+        .btn-warning { background: var(--warning-gradient); }
+        .btn-danger { background: var(--danger-gradient); }
+        .btn-gold { background: var(--gold-gradient); }
+        
+        .map-container {
+            height: 100%;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        #map {
+            width: 100%;
+            height: 100%;
+            border-radius: var(--border-radius);
+        }
+        
+        .driver-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .driver-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .driver-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .driver-card.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .driver-card.best-match {
+            border-color: #f1c40f;
+            background: rgba(241, 196, 15, 0.1);
+            position: relative;
+        }
+        
+        .driver-card.best-match::before {
+            content: '⭐ BEST MATCH';
+            position: absolute;
+            top: -8px;
+            right: 10px;
+            background: var(--gold-gradient);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        
+        .driver-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .driver-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .driver-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(241, 196, 15, 0.2);
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+        
+        .driver-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .driver-detail {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .match-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .match-result {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .match-result.success {
+            color: #27ae60;
+        }
+        
+        .match-result.searching {
+            color: #667eea;
+        }
+        
+        .match-result i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .searching-animation {
+            display: inline-block;
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-dots {
+            display: inline-block;
+        }
+        
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+        
+        .ride-summary {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .ride-summary h3 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .eta-banner {
+            background: var(--success-gradient);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+                height: auto;
+            }
+            
+            .map-container {
+                height: 400px;
+            }
+            
+            .left-panel, .right-panel {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .left-panel, .right-panel {
+                flex-direction: column;
+            }
+            
+            .driver-info {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Custom Map Styles */
+        .custom-marker {
+            background: #667eea;
+            border: 3px solid white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .driver-marker {
+            background: #27ae60;
+            border: 3px solid white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        .selected-driver-marker {
+            background: #f1c40f;
+            border: 3px solid white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            box-shadow: 0 3px 15px rgba(241, 196, 15, 0.5);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header glass-card">
+            <h1><i class="fas fa-route"></i> Smart Ride Matching</h1>
+            <p>AI-Powered Driver Matching with Real-time Location Tracking</p>
+        </div>
+        
+        <div class="main-layout">
+            <!-- Left Panel -->
+            <div class="left-panel">
+                <div class="section glass-card">
+                    <h2><i class="fas fa-location-dot"></i> Your Location</h2>
+                    <div class="location-section">
+                        <div class="location-status">
+                            <div class="location-dot" id="userLocationDot"></div>
+                            <div class="location-text" id="userLocationText">Detecting your location...</div>
+                            <button class="btn btn-warning" onclick="getUserLocation()" style="padding: 8px 12px; font-size: 12px;">
+                                <i class="fas fa-crosshairs"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pickupLocation">Pickup Location</label>
+                            <input type="text" id="pickupLocation" placeholder="Current location will be detected automatically">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="destinationLocation">Destination</label>
+                            <input type="text" id="destinationLocation" placeholder="Where do you want to go?">
+                        </div>
+                        
+                        <button class="btn btn-success" onclick="findNearbyDrivers()" id="findDriversBtn">
+                            <i class="fas fa-search"></i> Find Nearby Drivers
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="section glass-card">
+                    <h2><i class="fas fa-users"></i> Available Drivers</h2>
+                    <div class="driver-list" id="driversList">
+                        <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                            <i class="fas fa-car" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                            <div>Click "Find Nearby Drivers" to see available drivers</div>
+                        </div>
+                    </div>
+                    
+                    <div class="match-section" id="matchSection" style="display: none;">
+                        <div class="match-result" id="matchResult">
+                            <i class="fas fa-search searching-animation"></i>
+                            <div>Finding the perfect match<span class="loading-dots"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Center - Map -->
+            <div class="glass-card">
+                <div class="map-container">
+                    <div id="map"></div>
+                </div>
+            </div>
+            
+            <!-- Right Panel -->
+            <div class="right-panel">
+                <div class="section glass-card">
+                    <h2><i class="fas fa-star"></i> Best Match</h2>
+                    <div id="bestMatchDriver">
+                        <div style="text-align: center; padding: 30px 20px; color: var(--text-secondary);">
+                            <i class="fas fa-magic" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                            <div>Best match will appear here</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section glass-card">
+                    <h2><i class="fas fa-receipt"></i> Ride Summary</h2>
+                    <div id="rideSummary">
+                        <div style="text-align: center; padding: 30px 20px; color: var(--text-secondary);">
+                            <i class="fas fa-clipboard-list" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                            <div>Ride details will appear here</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-gold" id="bookRideBtn" onclick="bookRide()" style="display: none;">
+                        <i class="fas fa-check-circle"></i> Book This Ride
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let map;
+        let userLocation = null;
+        let userMarker = null;
+        let driverMarkers = [];
+        let selectedDriver = null;
+        let nearbyDrivers = [];
+        
+        // Initialize map
+        function initMap() {
+            const defaultLat = 28.6139;
+            const defaultLng = 77.2090;
+            
+            map = L.map('map').setView([defaultLat, defaultLng], 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 18,
+            }).addTo(map);
+        }
+        
+        // Get user location
+        function getUserLocation() {
+            const userLocationText = document.getElementById('userLocationText');
+            const userLocationDot = document.getElementById('userLocationDot');
+            
+            userLocationText.textContent = 'Getting your location...';
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        
+                        userLocationDot.classList.add('active');
+                        userLocationText.textContent = `Location found: ${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}`;
+                        
+                        document.getElementById('pickupLocation').value = `Current Location (${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)})`;
+                        
+                        map.setView([userLocation.lat, userLocation.lng], 15);
+                        
+                        if (userMarker) {
+                            map.removeLayer(userMarker);
+                        }
+                        
+                        userMarker = L.circleMarker([userLocation.lat, userLocation.lng], {
+                            radius: 10,
+                            fillColor: '#667eea',
+                            color: 'white',
+                            weight: 3,
+                            opacity: 1,
+                            fillOpacity: 0.8
+                        }).addTo(map);
+                        
+                        userMarker.bindPopup('Your Location').openPopup();
+                    },
+                    (error) => {
+                        console.error('Error getting location:', error);
+                        userLocationText.textContent = 'Location access denied. Using default location.';
+                        userLocation = { lat: 28.6139, lng: 77.2090 };
+                        document.getElementById('pickupLocation').value = 'New Delhi, India (Default)';
+                        
+                        if (userMarker) {
+                            map.removeLayer(userMarker);
+                        }
+                        
+                        userMarker = L.circleMarker([userLocation.lat, userLocation.lng], {
+                            radius: 10,
+                            fillColor: '#667eea',
+                            color: 'white',
+                            weight: 3,
+                            opacity: 1,
+                            fillOpacity: 0.8
+                        }).addTo(map);
+                        
+                        userMarker.bindPopup('Your Location (Default)').openPopup();
+                    }
+                );
+            } else {
+                userLocationText.textContent = 'Geolocation not supported. Using default location.';
+                userLocation = { lat: 28.6139, lng: 77.2090 };
+            }
+        }
+        
+        // Find nearby drivers
+        async function findNearbyDrivers() {
+            if (!userLocation) {
+                alert('Please allow location access first!');
+                getUserLocation();
+                return;
+            }
+            
+            const destination = document.getElementById('destinationLocation').value;
+            if (!destination.trim()) {
+                alert('Please enter a destination!');
+                return;
+            }
+            
+            const findBtn = document.getElementById('findDriversBtn');
+            findBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
+            findBtn.disabled = true;
+            
+            document.getElementById('matchSection').style.display = 'block';
+            
+            try {
+                const response = await fetch(`http://localhost:8000/api/drivers/match`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_lat: userLocation.lat,
+                        user_lng: userLocation.lng,
+                        destination: destination,
+                        user_id: 'user123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    nearbyDrivers = data.all_drivers;
+                    displayDrivers(nearbyDrivers);
+                    showBestMatch(data.best_match);
+                    showMatchResult('success', `Found ${nearbyDrivers.length} nearby drivers!`);
+                    addDriverMarkersToMap(nearbyDrivers);
+                } else {
+                    showMatchResult('error', 'No drivers found in your area');
+                }
+            } catch (error) {
+                console.error('Error finding drivers:', error);
+                showMatchResult('error', 'Failed to find drivers. Please try again.');
+            } finally {
+                findBtn.innerHTML = '<i class="fas fa-search"></i> Find Nearby Drivers';
+                findBtn.disabled = false;
+            }
+        }
+        
+        function displayDrivers(drivers) {
+            const driversList = document.getElementById('driversList');
+            
+            if (drivers.length === 0) {
+                driversList.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                        <i class="fas fa-car" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <div>No drivers available in your area</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            driversList.innerHTML = drivers.map((driverData, index) => `
+                <div class="driver-card ${index === 0 ? 'best-match' : ''}" onclick="selectDriver(${driverData.driver.id})">
+                    <div class="driver-header">
+                        <div class="driver-name">
+                            <i class="fas fa-user"></i>
+                            ${driverData.driver.name}
+                        </div>
+                        <div class="driver-rating">
+                            <i class="fas fa-star" style="color: #f1c40f;"></i>
+                            ${driverData.driver.rating}
+                        </div>
+                    </div>
+                    <div class="driver-info">
+                        <div class="driver-detail">
+                            <i class="fas fa-car"></i>
+                            ${driverData.driver.vehicle}
+                        </div>
+                        <div class="driver-detail">
+                            <i class="fas fa-clock"></i>
+                            ${driverData.eta} min
+                        </div>
+                        <div class="driver-detail">
+                            <i class="fas fa-route"></i>
+                            ${driverData.distance} km
+                        </div>
+                        <div class="driver-detail">
+                            <i class="fas fa-rupee-sign"></i>
+                            ₹${driverData.price}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function showBestMatch(bestMatch) {
+            document.getElementById('bestMatchDriver').innerHTML = `
+                <div class="driver-card best-match">
+                    <div class="driver-header">
+                        <div class="driver-name">
+                            <i class="fas fa-crown" style="color: #f1c40f;"></i>
+                            ${bestMatch.driver.name}
+                        </div>
+                        <div class="driver-rating">
+                            <i class="fas fa-star" style="color: #f1c40f;"></i>
+                            ${bestMatch.driver.rating}
+                        </div>
+                    </div>
+                    <div class="driver-info">
+                        <div class="driver-detail">
+                            <i class="fas fa-car"></i>
+                            ${bestMatch.driver.vehicle}
+                        </div>
+                        <div class="driver-detail">
+                            <i class="fas fa-phone"></i>
+                            ${bestMatch.driver.phone}
+                        </div>
+                        <div class="driver-detail">
+                            <i class="fas fa-id-card"></i>
+                            ${bestMatch.driver.license_plate}
+                        </div>
+                        <div class="driver-detail">
+                            <i class="fas fa-trophy"></i>
+                            ${(bestMatch.match_score * 100).toFixed(1)}% match
+                        </div>
+                    </div>
+                    <div class="eta-banner">
+                        🚗 Arrives in ${bestMatch.eta} minutes
+                    </div>
+                </div>
+            `;
+            
+            selectedDriver = bestMatch;
+            showRideSummary(bestMatch);
+        }
+        
+        function showRideSummary(driverMatch) {
+            const destination = document.getElementById('destinationLocation').value;
+            
+            document.getElementById('rideSummary').innerHTML = `
+                <div class="ride-summary">
+                    <h3>Trip Details</h3>
+                    <div class="summary-item">
+                        <span>Driver:</span>
+                        <span>${driverMatch.driver.name}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Vehicle:</span>
+                        <span>${driverMatch.driver.vehicle}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Distance:</span>
+                        <span>${driverMatch.distance} km</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>ETA:</span>
+                        <span>${driverMatch.eta} minutes</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Destination:</span>
+                        <span>${destination}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span><strong>Total Fare:</strong></span>
+                        <span><strong>₹${driverMatch.price}</strong></span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('bookRideBtn').style.display = 'block';
+        }
+        
+        function showMatchResult(type, message) {
+            const matchResult = document.getElementById('matchResult');
+            
+            if (type === 'success') {
+                matchResult.innerHTML = `
+                    <i class="fas fa-check-circle" style="color: #27ae60;"></i>
+                    <div>${message}</div>
+                `;
+                matchResult.className = 'match-result success';
+            } else {
+                matchResult.innerHTML = `
+                    <i class="fas fa-exclamation-circle" style="color: #e74c3c;"></i>
+                    <div>${message}</div>
+                `;
+                matchResult.className = 'match-result error';
+            }
+        }
+        
+        function addDriverMarkersToMap(drivers) {
+            // Clear existing driver markers
+            driverMarkers.forEach(marker => map.removeLayer(marker));
+            driverMarkers = [];
+            
+            // Add new markers
+            drivers.forEach((driverData, index) => {
+                const driver = driverData.driver;
+                const isSelected = index === 0; // First driver is best match
+                
+                const marker = L.circleMarker([driver.lat, driver.lng], {
+                    radius: isSelected ? 10 : 8,
+                    fillColor: isSelected ? '#f1c40f' : '#27ae60',
+                    color: 'white',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).addTo(map);
+                
+                marker.bindPopup(`
+                    <b>${driver.name}</b><br>
+                    ${driver.vehicle}<br>
+                    ⭐ ${driver.rating} | 🕒 ${driverData.eta} min<br>
+                    💰 ₹${driverData.price}
+                `);
+                
+                driverMarkers.push(marker);
+            });
+            
+            // Fit map to show all markers
+            if (drivers.length > 0 && userMarker) {
+                const group = new L.featureGroup([userMarker, ...driverMarkers]);
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+        
+        function selectDriver(driverId) {
+            const driverData = nearbyDrivers.find(d => d.driver.id === driverId);
+            if (driverData) {
+                showBestMatch(driverData);
+                
+                // Update visual selection
+                document.querySelectorAll('.driver-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                event.currentTarget.classList.add('selected');
+            }
+        }
+        
+        async function bookRide() {
+            if (!selectedDriver) {
+                alert('Please select a driver first!');
+                return;
+            }
+            
+            const bookBtn = document.getElementById('bookRideBtn');
+            bookBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Booking...';
+            bookBtn.disabled = true;
+            
+            try {
+                // Simulate booking API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                alert(`🎉 Ride booked successfully!\n\nDriver: ${selectedDriver.driver.name}\nETA: ${selectedDriver.eta} minutes\nFare: ₹${selectedDriver.price}`);
+                
+                // Reset UI
+                resetInterface();
+                
+            } catch (error) {
+                alert('Booking failed. Please try again.');
+            } finally {
+                bookBtn.innerHTML = '<i class="fas fa-check-circle"></i> Book This Ride';
+                bookBtn.disabled = false;
+            }
+        }
+        
+        function resetInterface() {
+            document.getElementById('destinationLocation').value = '';
+            document.getElementById('matchSection').style.display = 'none';
+            document.getElementById('bookRideBtn').style.display = 'none';
+            
+            document.getElementById('driversList').innerHTML = `
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-car" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                    <div>Click "Find Nearby Drivers" to see available drivers</div>
+                </div>
+            `;
+            
+            document.getElementById('bestMatchDriver').innerHTML = `
+                <div style="text-align: center; padding: 30px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-magic" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                    <div>Best match will appear here</div>
+                </div>
+            `;
+            
+            document.getElementById('rideSummary').innerHTML = `
+                <div style="text-align: center; padding: 30px 20px; color: var(--text-secondary);">
+                    <i class="fas fa-clipboard-list" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                    <div>Ride details will appear here</div>
+                </div>
+            `;
+            
+            // Clear driver markers
+            driverMarkers.forEach(marker => map.removeLayer(marker));
+            driverMarkers = [];
+        }
+        
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            initMap();
+            getUserLocation();
+        });
+</script>

@@ -3,8 +3,14 @@ uvicorn[standard]==0.24.0
 requests==2.31.0
 sqlalchemy==2.0.23
 <<<<<<< HEAD
+<<<<<<< HEAD
 python-decouple==3.8
 alembic==1.12.1
+=======
+psycopg2-binary==2.9.9
+python-decouple==3.8
+alembic==1.12.1
+>>>>>>> 847e6db0f34e5219b43095e5fef90d575c7fb6af
 =======
 psycopg2-binary==2.9.9
 python-decouple==3.8
