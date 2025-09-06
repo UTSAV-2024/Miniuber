@@ -1,0 +1,6 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+requests==2.31.0
+sqlalchemy==1.4.50
+python-decouple==3.8
+alembic==1.12.1
