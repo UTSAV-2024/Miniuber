@@ -261,6 +261,7 @@ async def update_ride_request(
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
+<<<<<<< HEAD
 
     
 from drivers import router as drivers_router
@@ -275,3 +276,5 @@ app.add_middleware(
 )
 
 app.include_router(drivers_router, prefix="/api", tags=["drivers"])    
+=======
+>>>>>>> 847e6db0f34e5219b43095e5fef90d575c7fb6af
