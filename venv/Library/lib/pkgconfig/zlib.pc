@@ -1,8 +1,8 @@
-prefix=D:/MiniUber/venv/Library
-exec_prefix=D:/MiniUber/venv/Library
-libdir=D:/MiniUber/venv/Library/lib
-sharedlibdir=D:/MiniUber/venv/Library/lib
-includedir=D:/MiniUber/venv/Library/include
+prefix=D:/Miniuber-main/venv/Library
+exec_prefix=D:/Miniuber-main/venv/Library
+libdir=D:/Miniuber-main/venv/Library/lib
+sharedlibdir=D:/Miniuber-main/venv/Library/lib
+includedir=D:/Miniuber-main/venv/Library/include
 
 Name: zlib
 Description: zlib compression library

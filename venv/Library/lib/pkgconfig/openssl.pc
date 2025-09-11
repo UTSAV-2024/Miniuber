@@ -1,4 +1,4 @@
-prefix=D:/MiniUber/venv/Library 
+prefix=D:/Miniuber-main/venv/Library 
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
