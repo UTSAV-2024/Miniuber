@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
+    <title>Mini Uber - User Dashboard</title>
+=======
+    <title>Mini Uber - Book Your Ride</title>
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        
+<<<<<<< HEAD
+        .connection-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-connected { background: #27ae60; }
+        .status-disconnected { background: #e74c3c; }
+        .status-connecting { background: #f39c12; }
+        
+=======
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+        .main-content {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 20px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+<<<<<<< HEAD
+            position: relative;
+=======
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+        }
+        
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-selector {
+            margin-bottom: 20px;
+        }
+        
+        .user-selector select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+<<<<<<< HEAD
+        .form-group input {
+=======
+        .form-group input, .form-group textarea {
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+<<<<<<< HEAD
+        .form-group input:focus {
+=======
+        .form-group input:focus, .form-group textarea:focus {
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .btn-primary { background: #667eea; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .ride-status {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+<<<<<<< HEAD
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .ride-status.pending { border-left: 4px solid #f39c12; }
+        .ride-status.accepted { border-left: 4px solid #27ae60; }
+        .ride-status.completed { border-left: 4px solid #2980b9; }
+        .ride-status.rejected { border-left: 4px solid #e74c3c; }
+        .ride-status.in_progress { border-left: 4px solid #9b59b6; }
+=======
+        }
+        
+        .ride-status.pending {
+            border-left: 4px solid #f39c12;
+        }
+        
+        .ride-status.accepted {
+            border-left: 4px solid #27ae60;
+        }
+        
+        .ride-status.completed {
+            border-left: 4px solid #2980b9;
+        }
+        
+        .ride-status.rejected {
+            border-left: 4px solid #e74c3c;
+        }
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+        
+        .status-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .status-pending .status-icon { color: #f39c12; }
+        .status-accepted .status-icon { color: #27ae60; }
+        .status-completed .status-icon { color: #2980b9; }
+        .status-rejected .status-icon { color: #e74c3c; }
+<<<<<<< HEAD
+        .status-in_progress .status-icon { color: #9b59b6; }
+=======
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+        
+        .rides-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .rides-table th,
+        .rides-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .rides-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .rides-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .status-cell {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+        }
+        
+        .status-pending { background: #f39c12; }
+        .status-accepted { background: #27ae60; }
+        .status-completed { background: #2980b9; }
+        .status-rejected { background: #e74c3c; }
+        .status-in_progress { background: #9b59b6; }
+<<<<<<< HEAD
+        .status-cancelled { background: #95a5a6; }
+=======
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+        
+        .no-rides {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        .loading {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .price-estimate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+<<<<<<< HEAD
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 15px 20px;
+            background: #27ae60;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.error { background: #e74c3c; }
+        .notification.warning { background: #f39c12; }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .action-buttons .btn {
+            flex: 1;
+        }
+        
+        .end-ride-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .modal-content h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .modal-content p {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .modal-buttons .btn {
+            flex: 1;
+=======
+        .auto-refresh {
+            font-size: 14px;
+            color: #7f8c8d;
+            text-align: center;
+            margin-top: 15px;
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+<<<<<<< HEAD
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+=======
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+        }
+    </style>
+</head>
+<body>
+<<<<<<< HEAD
+    <div class="connection-status status-connecting" id="connectionStatus">
+        <i class="fas fa-wifi"></i> Connecting...
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-taxi"></i> Mini Uber - User Dashboard</h1>
+            <p>Book your ride and travel safely</p>
+=======
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-taxi"></i> Mini Uber</h1>
+            <p>Book your ride in seconds</p>
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+        </div>
+        
+        <div class="main-content">
+            <!-- Left Panel - Book Ride -->
+            <div class="card">
+                <h2><i class="fas fa-plus-circle"></i> Book New Ride</h2>
+                
+                <div class="user-selector">
+                    <label for="userSelect">Select User:</label>
+                    <select id="userSelect" onchange="switchUser()">
+                        <option value="user001">John Smith</option>
+                        <option value="user002">Sarah Wilson</option>
+                        <option value="user003">Mike Johnson</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pickup">Pickup Location</label>
+                    <input type="text" id="pickup" placeholder="Enter pickup location" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="destination">Destination</label>
+                    <input type="text" id="destination" placeholder="Where do you want to go?" required>
+                </div>
+                
+                <div class="price-estimate" id="priceEstimate" style="display: none;">
+                    <div style="font-size: 18px; font-weight: bold;">Estimated Fare</div>
+                    <div style="font-size: 24px; margin-top: 5px;">₹<span id="fareAmount">0</span></div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="bookRide()" id="bookBtn">
+                    <i class="fas fa-car"></i> Book Ride
+                </button>
+                
+                <div id="currentRideStatus" style="display: none;">
+                    <!-- Current ride status will be shown here -->
+                </div>
+<<<<<<< HEAD
+=======
+                
+                <div class="auto-refresh">
+                    <i class="fas fa-sync-alt"></i> Auto-refreshing every 10 seconds
+                </div>
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+            </div>
+            
+            <!-- Right Panel - Ride History -->
+            <div class="card">
+                <h2><i class="fas fa-history"></i> Your Rides</h2>
+                <button class="btn btn-warning" onclick="refreshRides()" style="margin-bottom: 15px;">
+                    <i class="fas fa-refresh" id="refreshIcon"></i> Refresh
+                </button>
+                
+                <div id="ridesContainer">
+                    <div class="no-rides">
+                        <i class="fas fa-taxi" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
+                        <div>No rides found</div>
+                        <div style="font-size: 14px; margin-top: 10px;">Your ride history will appear here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<<<<<<< HEAD
+    <!-- End Ride Modal -->
+    <div class="end-ride-modal" id="endRideModal">
+        <div class="modal-content">
+            <h3><i class="fas fa-flag-checkered"></i> End Ride</h3>
+            <p>Are you sure you want to end this ride? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-danger" onclick="confirmEndRide()">
+                    <i class="fas fa-stop"></i> End Ride
+                </button>
+                <button class="btn btn-warning" onclick="closeEndRideModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-info-circle"></i>
+        <span id="notificationText"></span>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api';
+        const WS_URL = 'ws://localhost:8000/ws/user';
+        
+        let currentUser = 'user001';
+        let currentRideId = null;
+        let autoRefreshInterval;
+        let socket = null;
+        let reconnectAttempts = 0;
+        const maxReconnectAttempts = 5;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeWebSocket();
+            refreshRides();
+=======
+    <script>
+        const API_BASE = 'http://localhost:8000/api';
+        let currentUser = 'user001';
+        let currentRideId = null;
+        let autoRefreshInterval;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshRides();
+            startAutoRefresh();
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+            
+            // Add input event listeners for fare estimation
+            document.getElementById('pickup').addEventListener('input', estimateFare);
+            document.getElementById('destination').addEventListener('input', estimateFare);
+        });
+        
+<<<<<<< HEAD
+        function initializeWebSocket() {
+            updateConnectionStatus('connecting');
+            
+            try {
+                socket = new WebSocket(WS_URL);
+                
+                socket.onopen = function(event) {
+                    console.log('WebSocket connected');
+                    updateConnectionStatus('connected');
+                    reconnectAttempts = 0;
+                    showNotification('Connected to real-time updates', 'success');
+                };
+                
+                socket.onmessage = function(event) {
+                    const data = JSON.parse(event.data);
+                    handleRealtimeUpdate(data);
+                };
+                
+                socket.onclose = function(event) {
+                    console.log('WebSocket disconnected');
+                    updateConnectionStatus('disconnected');
+                    
+                    if (reconnectAttempts < maxReconnectAttempts) {
+                        reconnectAttempts++;
+                        showNotification(`Connection lost. Reconnecting... (${reconnectAttempts}/${maxReconnectAttempts})`, 'warning');
+                        setTimeout(initializeWebSocket, 3000 * reconnectAttempts);
+                    } else {
+                        showNotification('Connection lost. Please refresh the page.', 'error');
+                        startFallbackPolling();
+                    }
+                };
+                
+                socket.onerror = function(error) {
+                    console.error('WebSocket error:', error);
+                    updateConnectionStatus('disconnected');
+                };
+                
+            } catch (error) {
+                console.error('Failed to create WebSocket connection:', error);
+                updateConnectionStatus('disconnected');
+                startFallbackPolling();
+            }
+        }
+        
+        function updateConnectionStatus(status) {
+            const statusElement = document.getElementById('connectionStatus');
+            statusElement.className = `connection-status status-${status}`;
+            
+            switch(status) {
+                case 'connected':
+                    statusElement.innerHTML = '<i class="fas fa-wifi"></i> Connected';
+                    break;
+                case 'disconnected':
+                    statusElement.innerHTML = '<i class="fas fa-wifi"></i> Disconnected';
+                    break;
+                case 'connecting':
+                    statusElement.innerHTML = '<i class="fas fa-spinner loading"></i> Connecting...';
+                    break;
+            }
+        }
+        
+        function handleRealtimeUpdate(data) {
+            console.log('Received real-time update:', data);
+            
+            switch(data.type) {
+                case 'ride_status_updated':
+                    if (data.data.user_id === currentUser) {
+                        handleRideStatusUpdate(data.data);
+                    }
+                    refreshRides();
+                    break;
+                    
+                case 'ride_ended':
+                    if (data.data.user_id === currentUser) {
+                        handleRideEnded(data.data);
+                    }
+                    refreshRides();
+                    break;
+                    
+                case 'new_ride_request':
+                    if (data.data.user_id === currentUser) {
+                        showNotification('Your ride request has been created!', 'success');
+                        refreshRides();
+                    }
+                    break;
+            }
+        }
+        
+        function handleRideStatusUpdate(rideData) {
+            if (currentRideId === rideData.id) {
+                showCurrentRideStatus(rideData);
+                
+                switch(rideData.status) {
+                    case 'accepted':
+                        showNotification(`Driver ${rideData.driver_name} accepted your ride!`, 'success');
+                        break;
+                    case 'rejected':
+                        showNotification('Ride request rejected. Looking for another driver...', 'warning');
+                        break;
+                    case 'in_progress':
+                        showNotification('Your ride has started. Enjoy your trip!', 'success');
+                        break;
+                    case 'completed':
+                        showNotification('Ride completed. Thank you for using Mini Uber!', 'success');
+                        break;
+                    case 'cancelled':
+                        showNotification('Ride has been cancelled.', 'warning');
+                        break;
+                }
+            }
+        }
+        
+        function handleRideEnded(rideData) {
+            if (currentRideId === rideData.id) {
+                const endedBy = rideData.ended_by === 'user' ? 'you' : 'the driver';
+                showNotification(`Ride ended by ${endedBy}. Final fare: ₹${rideData.actual_fare}`, 'success');
+                
+                setTimeout(() => {
+                    document.getElementById('currentRideStatus').style.display = 'none';
+                    currentRideId = null;
+                }, 8000);
+            }
+        }
+        
+        function startFallbackPolling() {
+            autoRefreshInterval = setInterval(() => {
+                if (currentRideId) {
+                    refreshRides();
+                }
+            }, 10000);
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notification.className = `notification ${type}`;
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+        
+=======
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+        function switchUser() {
+            currentUser = document.getElementById('userSelect').value;
+            refreshRides();
+            
+<<<<<<< HEAD
+=======
+            // Clear current ride status when switching users
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+            document.getElementById('currentRideStatus').style.display = 'none';
+            currentRideId = null;
+        }
+        
+        async function bookRide() {
+            const pickup = document.getElementById('pickup').value.trim();
+            const destination = document.getElementById('destination').value.trim();
+            
+            if (!pickup || !destination) {
+<<<<<<< HEAD
+                showNotification('Please enter both pickup and destination locations', 'error');
+=======
+                alert('Please enter both pickup and destination locations');
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+                return;
+            }
+            
+            const bookBtn = document.getElementById('bookBtn');
+            bookBtn.innerHTML = '<i class="fas fa-spinner loading"></i> Booking...';
+            bookBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_BASE}/ride-request`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: currentUser,
+                        pickup_location: pickup,
+                        destination_location: destination,
+<<<<<<< HEAD
+                        pickup_lat: 28.6139 + (Math.random() - 0.5) * 0.02,
+=======
+                        pickup_lat: 28.6139 + (Math.random() - 0.5) * 0.02, // Random nearby location
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+                        pickup_lng: 77.2090 + (Math.random() - 0.5) * 0.02,
+                        destination_lat: 28.6200 + (Math.random() - 0.5) * 0.02,
+                        destination_lng: 77.2200 + (Math.random() - 0.5) * 0.02
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentRideId = data.ride_request.id;
+<<<<<<< HEAD
+                    showNotification('Ride booked successfully! Looking for drivers...', 'success');
+                    
+=======
+                    alert('Ride booked successfully! Waiting for driver acceptance...');
+                    
+                    // Clear form
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+                    document.getElementById('pickup').value = '';
+                    document.getElementById('destination').value = '';
+                    document.getElementById('priceEstimate').style.display = 'none';
+                    
+<<<<<<< HEAD
+                    showCurrentRideStatus(data.ride_request);
+                    refreshRides();
+                } else {
+                    showNotification('Failed to book ride: ' + (data.message || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                console.error('Error booking ride:', error);
+                showNotification('Failed to book ride. Please try again.', 'error');
+=======
+                    // Show ride status
+                    showCurrentRideStatus(data.ride_request);
+                    
+                    // Refresh rides
+                    refreshRides();
+                } else {
+                    alert('Failed to book ride: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error booking ride:', error);
+                alert('Failed to book ride. Please try again.');
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+            } finally {
+                bookBtn.innerHTML = '<i class="fas fa-car"></i> Book Ride';
+                bookBtn.disabled = false;
+            }
+        }
+        
+        async function refreshRides() {
+            const refreshIcon = document.getElementById('refreshIcon');
+            refreshIcon.classList.add('loading');
+            
+            try {
+                const response = await fetch(`${API_BASE}/user/${currentUser}/rides`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayRides(data.rides);
+                    
+<<<<<<< HEAD
+=======
+                    // Check for current active ride
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+                    const activeRide = data.rides.find(r => 
+                        r.status === 'pending' || r.status === 'accepted' || r.status === 'in_progress'
+                    );
+                    
+                    if (activeRide) {
+                        currentRideId = activeRide.id;
+                        showCurrentRideStatus(activeRide);
+                    } else {
+<<<<<<< HEAD
+=======
+                        // No active ride
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+                        document.getElementById('currentRideStatus').style.display = 'none';
+                        currentRideId = null;
+                    }
+                }
+            } catch (error) {
+                console.error('Error refreshing rides:', error);
+<<<<<<< HEAD
+                showNotification('Failed to refresh rides', 'error');
+=======
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+            } finally {
+                refreshIcon.classList.remove('loading');
+            }
+        }
+        
+        function displayRides(rides) {
+            const container = document.getElementById('ridesContainer');
+            
+            if (rides.length === 0) {
+                container.innerHTML = `
+                    <div class="no-rides">
+                        <i class="fas fa-taxi" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px;"></i>
+                        <div>No rides found</div>
+                        <div style="font-size: 14px; margin-top: 10px;">Your ride history will appear here</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <table class="rides-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Status</th>
+                            <th>Driver</th>
+                            <th>Fare</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rides.map(ride => `
+                            <tr>
+                                <td>#${ride.id}</td>
+                                <td title="${ride.pickup_location}">${truncateText(ride.pickup_location, 20)}</td>
+                                <td title="${ride.destination_location}">${truncateText(ride.destination_location, 20)}</td>
+                                <td><span class="status-cell status-${ride.status}">${ride.status}</span></td>
+                                <td>${ride.driver_name || 'Not assigned'}</td>
+                                <td>₹${ride.actual_fare || ride.estimated_fare || 0}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+        
+        function showCurrentRideStatus(ride) {
+            const statusContainer = document.getElementById('currentRideStatus');
+            
+            let statusClass = 'status-' + ride.status;
+            let statusIcon = 'fas fa-clock';
+            let statusMessage = 'Waiting for driver...';
+<<<<<<< HEAD
+            let actionButtons = '';
+=======
+            let actionButton = '';
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+            
+            switch(ride.status) {
+                case 'pending':
+                    statusIcon = 'fas fa-clock';
+                    statusMessage = 'Looking for nearby drivers...';
+<<<<<<< HEAD
+                    actionButtons = `
+                        <div class="action-buttons">
+                            <button class="btn btn-danger" onclick="cancelRide(${ride.id})">
+                                <i class="fas fa-times"></i> Cancel Ride
+                            </button>
+                        </div>
+                    `;
+=======
+                    actionButton = `<button class="btn btn-danger" onclick="cancelRide(${ride.id})" style="margin-top: 15px;">
+                        <i class="fas fa-times"></i> Cancel Ride
+                    </button>`;
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+                    break;
+                case 'accepted':
+                    statusIcon = 'fas fa-check-circle';
+                    statusMessage = `Driver ${ride.driver_name || 'assigned'} is on the way!`;
+                    if (ride.driver_phone) {
+                        statusMessage += `<br><small>Contact: ${ride.driver_phone}</small>`;
+                    }
+<<<<<<< HEAD
+                    actionButtons = `
+                        <div class="action-buttons">
+                            <button class="btn btn-danger" onclick="openEndRideModal(${ride.id})">
+                                <i class="fas fa-stop"></i> End Ride
+                            </button>
+                            <button class="btn btn-warning" onclick="cancelRide(${ride.id})">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    `;
+=======
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+                    break;
+                case 'in_progress':
+                    statusIcon = 'fas fa-car';
+                    statusMessage = 'Ride in progress. Enjoy your trip!';
+<<<<<<< HEAD
+                    actionButtons = `
+                        <div class="action-buttons">
+                            <button class="btn btn-danger" onclick="openEndRideModal(${ride.id})">
+                                <i class="fas fa-flag-checkered"></i> End Ride
+                            </button>
+                        </div>
+                    `;
+=======
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+                    break;
+                case 'completed':
+                    statusIcon = 'fas fa-flag-checkered';
+                    statusMessage = 'Ride completed. Thank you!';
+<<<<<<< HEAD
+                    setTimeout(() => {
+                        statusContainer.style.display = 'none';
+                        currentRideId = null;
+                    }, 8000);
+=======
+                    // Hide status after showing completion
+                    setTimeout(() => {
+                        statusContainer.style.display = 'none';
+                        currentRideId = null;
+                    }, 5000);
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+                    break;
+                case 'rejected':
+                    statusIcon = 'fas fa-exclamation-triangle';
+                    statusMessage = 'No drivers available. Please try again.';
+<<<<<<< HEAD
+                    setTimeout(() => {
+                        statusContainer.style.display = 'none';
+                        currentRideId = null;
+                    }, 8000);
+=======
+                    // Hide status after showing rejection
+                    setTimeout(() => {
+                        statusContainer.style.display = 'none';
+                        currentRideId = null;
+                    }, 5000);
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+                    break;
+            }
+            
+            statusContainer.innerHTML = `
+                <div class="ride-status ${statusClass}">
+                    <div class="status-icon">
+                        <i class="${statusIcon}"></i>
+                    </div>
+                    <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">
+                        Ride #${ride.id}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        ${statusMessage}
+                    </div>
+                    <div style="font-size: 14px; color: #666;">
+                        From: ${ride.pickup_location}<br>
+                        To: ${ride.destination_location}<br>
+                        Fare: ₹${ride.actual_fare || ride.estimated_fare || 0}
+                    </div>
+<<<<<<< HEAD
+                    ${actionButtons}
+=======
+                    ${actionButton}
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+                </div>
+            `;
+            
+            statusContainer.style.display = 'block';
+        }
+        
+<<<<<<< HEAD
+        function openEndRideModal(rideId) {
+            currentRideId = rideId;
+            document.getElementById('endRideModal').style.display = 'flex';
+        }
+        
+        function closeEndRideModal() {
+            document.getElementById('endRideModal').style.display = 'none';
+        }
+        
+        async function confirmEndRide() {
+            if (!currentRideId) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/rides/${currentRideId}/end`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ended_by: 'user',
+                        reason: 'User requested ride completion'
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showNotification(`Ride ended successfully. Final fare: ₹${data.final_fare}`, 'success');
+                    closeEndRideModal();
+                    refreshRides();
+                } else {
+                    showNotification('Failed to end ride: ' + (data.message || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                console.error('Error ending ride:', error);
+                showNotification('Failed to end ride. Please try again.', 'error');
+            }
+        }
+        
+=======
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+        async function cancelRide(rideId) {
+            if (!confirm('Are you sure you want to cancel this ride?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/rides/${rideId}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        status: 'cancelled'
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+<<<<<<< HEAD
+                    showNotification('Ride cancelled successfully.', 'warning');
+=======
+                    alert('Ride cancelled successfully.');
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+                    document.getElementById('currentRideStatus').style.display = 'none';
+                    currentRideId = null;
+                    refreshRides();
+                } else {
+<<<<<<< HEAD
+                    showNotification('Failed to cancel ride: ' + (data.message || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                console.error('Error cancelling ride:', error);
+                showNotification('Failed to cancel ride. Please try again.', 'error');
+=======
+                    alert('Failed to cancel ride: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error cancelling ride:', error);
+                alert('Failed to cancel ride. Please try again.');
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+            }
+        }
+        
+        function estimateFare() {
+            const pickup = document.getElementById('pickup').value.trim();
+            const destination = document.getElementById('destination').value.trim();
+            
+            if (pickup && destination) {
+<<<<<<< HEAD
+=======
+                // Simple fare estimation based on text length (in real app, use distance calculation)
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+                const estimatedDistance = Math.max(2, (pickup.length + destination.length) / 10);
+                const baseFare = 50;
+                const farePerKm = 12;
+                const estimatedFare = Math.round(baseFare + (estimatedDistance * farePerKm));
+                
+                document.getElementById('fareAmount').textContent = estimatedFare;
+                document.getElementById('priceEstimate').style.display = 'block';
+            } else {
+                document.getElementById('priceEstimate').style.display = 'none';
+            }
+        }
+        
+        function truncateText(text, maxLength) {
+            if (text.length <= maxLength) return text;
+            return text.substring(0, maxLength) + '...';
+        }
+        
+<<<<<<< HEAD
+        window.addEventListener('beforeunload', () => {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                socket.close();
+            }
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+=======
+        function getUserName(userId) {
+            const userNames = {
+                'user001': 'John Smith',
+                'user002': 'Sarah Wilson',
+                'user003': 'Mike Johnson'
+            };
+            return userNames[userId] || 'Unknown User';
+        }
+        
+        function startAutoRefresh() {
+            // Auto refresh every 10 seconds if there's an active ride
+            autoRefreshInterval = setInterval(() => {
+                if (currentRideId) {
+                    refreshRides();
+                }
+            }, 10000);
+        }
+        
+        // Cleanup intervals on page unload
+        window.addEventListener('beforeunload', () => {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+>>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+        });
+    </script>
+</body>
+</html>

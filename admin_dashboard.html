@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Uber - Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #ecf0f1;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header h1 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ecf0f1;
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .stat-label {
+            color: #bdc3c7;
+            font-size: 16px;
+        }
+        
+        .stat-change {
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        .stat-change.positive { color: #2ecc71; }
+        .stat-change.negative { color: #e74c3c; }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+        }
+        
+        .card h2 {
+            color: #ecf0f1;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary { background: #3498db; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .table-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .data-table th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            color: #ecf0f1;
+        }
+        
+        .data-table td {
+            color: #bdc3c7;
+        }
+        
+        .data-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+        }
+        
+        .status-pending { background: #f39c12; }
+        .status-accepted { background: #27ae60; }
+        .status-completed { background: #3498db; }
+        .status-rejected { background: #e74c3c; }
+        .status-cancelled { background: #95a5a6; }
+        .status-in_progress { background: #9b59b6; }
+        
+        .status-online { background: #27ae60; }
+        .status-offline { background: #95a5a6; }
+        .status-busy { background: #f39c12; }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        .loading {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .refresh-timer {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-left: 10px;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group select {
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ecf0f1;
+        }
+        
+        .filter-group select option {
+            background: #2c3e50;
+            color: #ecf0f1;
+        }
+        
+        .ride-details {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-chart-line"></i> Admin Dashboard</h1>
+            <div class="header-controls">
+                <button class="btn btn-primary" onclick="refreshAllData()">
+                    <i class="fas fa-refresh" id="mainRefreshIcon"></i> Refresh All
+                </button>
+                <span class="refresh-timer">Auto-refresh in <span id="refreshTimer">15</span>s</span>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalRides">0</div>
+                <div class="stat-label">Total Rides</div>
+                <div class="stat-change positive" id="ridesChange">+0 today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeRides">0</div>
+                <div class="stat-label">Active Rides</div>
+                <div class="stat-change" id="activeChange">In progress</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="onlineDrivers">0</div>
+                <div class="stat-label">Online Drivers</div>
+                <div class="stat-change" id="driversChange">Available now</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">₹<span id="totalRevenue">0</span></div>
+                <div class="stat-label">Total Revenue</div>
+                <div class="stat-change positive" id="revenueChange">+₹0 today</div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="card">
+                <h2><i class="fas fa-list"></i> All Rides</h2>
+                <div class="filters">
+                    <div class="filter-group">
+                        <select id="statusFilter" onchange="applyFilters()">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <select id="driverFilter" onchange="applyFilters()">
+                            <option value="">All Drivers</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Driver</th>
+                                <th>Route</th>
+                                <th>Status</th>
+                                <th>Fare</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ridesTableBody">
+                            <tr>
+                                <td colspan="7" class="no-data">
+                                    <i class="fas fa-spinner loading" style="font-size: 2rem; margin-bottom: 15px;"></i>
+                                    <div>Loading rides...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-users"></i> Driver Status</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Vehicle</th>
+                                <th>Status</th>
+                                <th>Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody id="driversTableBody">
+                            <tr>
+                                <td colspan="4" class="no-data">
+                                    <i class="fas fa-spinner loading" style="font-size: 2rem; margin-bottom: 15px;"></i>
+                                    <div>Loading drivers...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api';
+        let allRides = [];
+        let allDrivers = [];
+        let autoRefreshInterval;
+        let refreshCountdown = 15;
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshAllData();
+            startAutoRefresh();
+        });
+        
+        async function refreshAllData() {
+            const mainRefreshIcon = document.getElementById('mainRefreshIcon');
+            mainRefreshIcon.classList.add('loading');
+            
+            try {
+                await Promise.all([
+                    loadRides(),
+                    loadDrivers()
+                ]);
+                
+                updateStatistics();
+                populateFilters();
+                
+            } catch (error) {
+                console.error('Error refreshing data:', error);
+            } finally {
+                mainRefreshIcon.classList.remove('loading');
+                resetRefreshTimer();
+            }
+        }
+        
+        async function loadRides() {
+            try {
+                const response = await fetch(`${API_BASE}/rides/all`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    allRides = data.rides;
+                    displayRides(allRides);
+                }
+            } catch (error) {
+                console.error('Error loading rides:', error);
+            }
+        }
+        
+        async function loadDrivers() {
+            try {
+                const response = await fetch(`${API_BASE}/drivers/all`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    allDrivers = data.drivers;
+                    displayDrivers(allDrivers);
+                }
+            } catch (error) {
+                console.error('Error loading drivers:', error);
+            }
+        }
+        
+        function displayRides(rides) {
+            const tbody = document.getElementById('ridesTableBody');
+            
+            if (rides.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="no-data">
+                            <i class="fas fa-taxi" style="font-size: 2rem; margin-bottom: 15px;"></i>
+                            <div>No rides found</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = rides.map(ride => `
+                <tr>
+                    <td>#${ride.id}</td>
+                    <td>${ride.user_name || 'Unknown'}</td>
+                    <td>${ride.driver_name || 'Not assigned'}</td>
+                    <td>
+                        <div>${truncateText(ride.pickup_location, 25)}</div>
+                        <div class="ride-details">→ ${truncateText(ride.destination_location, 25)}</div>
+                    </td>
+                    <td><span class="status-badge status-${ride.status}">${ride.status}</span></td>
+                    <td>₹${ride.actual_fare || ride.estimated_fare || 0}</td>
+                    <td>${formatDateTime(ride.created_at)}</td>
+                </tr>
+            `).join('');
+        }
+        
+        function displayDrivers(drivers) {
+            const tbody = document.getElementById('driversTableBody');
+            
+            if (drivers.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="no-data">
+                            <i class="fas fa-user-slash" style="font-size: 2rem; margin-bottom: 15px;"></i>
+                            <div>No drivers found</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = drivers.map(driver => `
+                <tr>
+                    <td>
+                        <div>${driver.name}</div>
+                        <div class="ride-details">${driver.phone || 'No phone'}</div>
+                    </td>
+                    <td>
+                        <div>${driver.vehicle_type || 'Unknown'}</div>
+                        <div class="ride-details">${driver.vehicle_number || 'No number'}</div>
+                    </td>
+                    <td><span class="status-badge status-${driver.status}">${driver.status}</span></td>
+                    <td>
+                        <div>⭐ ${driver.rating || 0}</div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function updateStatistics() {
+            const today = new Date().toDateString();
+            
+            // Total rides
+            document.getElementById('totalRides').textContent = allRides.length;
+            
+            // Active rides (pending, accepted, in_progress)
+            const activeRides = allRides.filter(r => 
+                ['pending', 'accepted', 'in_progress'].includes(r.status)
+            );
+            document.getElementById('activeRides').textContent = activeRides.length;
+            
+            // Online drivers
+            const onlineDrivers = allDrivers.filter(d => d.status === 'online');
+            document.getElementById('onlineDrivers').textContent = onlineDrivers.length;
+            
+            // Total revenue
+            const completedRides = allRides.filter(r => r.status === 'completed');
+            const totalRevenue = completedRides.reduce((sum, ride) => 
+                sum + (ride.actual_fare || ride.estimated_fare || 0), 0
+            );
+            document.getElementById('totalRevenue').textContent = Math.round(totalRevenue);
+            
+            // Today's stats
+            const todayRides = allRides.filter(r => 
+                new Date(r.created_at).toDateString() === today
+            );
+            document.getElementById('ridesChange').textContent = `+${todayRides.length} today`;
+            
+            const todayRevenue = todayRides
+                .filter(r => r.status === 'completed')
+                .reduce((sum, ride) => sum + (ride.actual_fare || ride.estimated_fare || 0), 0);
+            document.getElementById('revenueChange').textContent = `+₹${Math.round(todayRevenue)} today`;
+            
+            // Update active status
+            document.getElementById('activeChange').textContent = activeRides.length > 0 ? 
+                `${activeRides.length} in progress` : 'All completed';
+            document.getElementById('driversChange').textContent = `${onlineDrivers.length} available now`;
+        }
+        
+        function populateFilters() {
+            // Populate driver filter
+            const driverFilter = document.getElementById('driverFilter');
+            const uniqueDrivers = [...new Set(allRides
+                .filter(r => r.driver_name)
+                .map(r => r.driver_name)
+            )];
+            
+            driverFilter.innerHTML = '<option value="">All Drivers</option>' +
+                uniqueDrivers.map(driver => `<option value="${driver}">${driver}</option>`).join('');
+        }
+        
+        function applyFilters() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const driverFilter = document.getElementById('driverFilter').value;
+            
+            let filteredRides = [...allRides];
+            
+            if (statusFilter) {
+                filteredRides = filteredRides.filter(ride => ride.status === statusFilter);
+            }
+            
+            if (driverFilter) {
+                filteredRides = filteredRides.filter(ride => ride.driver_name === driverFilter);
+            }
+            
+            displayRides(filteredRides);
+        }
+        
+        function truncateText(text, maxLength) {
+            if (!text || text.length <= maxLength) return text || 'N/A';
+            return text.substring(0, maxLength) + '...';
+        }
+        
+        function formatDateTime(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            
+            return date.toLocaleDateString();
+        }
+        
+        function startAutoRefresh() {
+            // Auto refresh every 15 seconds
+            autoRefreshInterval = setInterval(refreshAllData, 15000);
+            
+            // Update countdown timer
+            setInterval(() => {
+                refreshCountdown--;
+                document.getElementById('refreshTimer').textContent = refreshCountdown;
+                
+                if (refreshCountdown <= 0) {
+                    refreshCountdown = 15;
+                }
+            }, 1000);
+        }
+        
+        function resetRefreshTimer() {
+            refreshCountdown = 15;
+            document.getElementById('refreshTimer').textContent = refreshCountdown;
+        }
+        
+        // Cleanup intervals on page unload
+        window.addEventListener('beforeunload', () => {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+        });
+    </script>
+</body>
+</html>
