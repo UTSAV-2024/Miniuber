@@ -210,7 +210,7 @@ async def health_check():
     }
 
 # ------------------------------
-# USER ENDPOINTS
+# USER ENDPOINT
 # ------------------------------
 
 @app.post("/api/users")
@@ -845,3 +845,4 @@ if __name__ == "__main__":
 =======
     uvicorn.run(app, host="0.0.0.0", port=8000)
 >>>>>>> a5309df6750f879511ff530e42aa95c0b257064e
+
